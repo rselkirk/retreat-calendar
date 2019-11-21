@@ -176,6 +176,11 @@ main {
   transition: 0.5s ease-out;
 }
 
+ /* change color of occupied room*/
+.calendar .body .occupied {
+  background: red;
+}
+
 .calendar .body .selected {
   border-left: 10px solid transparent;
   border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 40%);

@@ -3,8 +3,9 @@ import * as dateFns from "date-fns";
 
 class Calendar extends React.Component {
   state = {
-    currentMonth: new Date(),
-    selectedDate: new Date()
+    currentMonth: new Date(2025, 7),
+    selectedDate: new Date(2025, 7, 1),
+    registrationDays: new Date(2025, 7, 5),
   };
 
   renderHeader() { 
@@ -64,8 +65,11 @@ class Calendar extends React.Component {
             className={`col cell ${
               !dateFns.isSameMonth(day, monthStart)
                 ? "disabled"
-                : dateFns.isSameDay(day, selectedDate) ? "selected" : ""
+              : dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
               }`}
+            // className={`col cell ${
+            //   dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
+            //   }`}
             key={day}
             onClick={() => this.onDateClick(cloneDay)}
           >
