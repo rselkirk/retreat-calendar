@@ -29,7 +29,7 @@ class Calendar extends React.Component {
   }
 
   renderDays() { 
-    const dateFormat = "dddd";
+    const dateFormat = "iiii";
     const days = [];
     let startDate = dateFns.startOfWeek(this.state.currentMonth);
     for (let i = 0; i < 7; i++) {
@@ -67,7 +67,7 @@ class Calendar extends React.Component {
                 : dateFns.isSameDay(day, selectedDate) ? "selected" : ""
               }`}
             key={day}
-            onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
+            onClick={() => this.onDateClick(cloneDay)}
           >
             <span className="number">{formattedDate}</span>
             <span className="bg">{formattedDate}</span>
@@ -84,6 +84,12 @@ class Calendar extends React.Component {
     }
     return <div className="body">{rows}</div>;
   }
+
+  onDateClick = day => {
+    this.setState({
+      selectedDate: day
+    });
+  };
 
   nextMonth = () => { 
     this.setState({
