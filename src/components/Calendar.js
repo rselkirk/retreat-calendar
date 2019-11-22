@@ -6,8 +6,20 @@ class Calendar extends React.Component {
   state = {
     currentMonth: new Date(2025, 7),
     selectedDate: new Date(2025, 7, 1),
-    registrationDays: { dates: [new Date(2025, 7, 5), new Date(2025, 7, 6)]},
+    registrationDays: {dates: []},
   };
+
+  componentDidMount() {
+    fetch('https://demo14.secure.retreat.guru/api/v1/registrations?token=ef061e1a717568ee5ca5c76a94cf5842')
+      .then(response => response.json())
+      .then(data => {
+        let dates = [1];
+        let occupiedDates = data.map((reg) => {
+          dates = dates.concat(dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) }));
+        })
+        this.setState({registrationDays: {dates: dates}});
+      })
+  }
 
   renderHeader() { 
     const dateFormat = "MMMM yyyy";
@@ -47,23 +59,13 @@ class Calendar extends React.Component {
   isOccupied = (regDate) => {
     let occ = false;
     const dates = this.state.registrationDays.dates;
-    // console.log(typeof dates);
-    // console.log('dates:', dates);
-    // console.log('regDate:', regDate);
-    // console.log(dates.includes(regDate));
-    // return dates.includes(regDate);
     dates.forEach(function (date) {
-      // console.log(date, regDate);
-      console.log(dateFns.isSameDay(date, regDate));
       if (dateFns.isSameDay(date, regDate)) {
-        console.log('HERE!')
         occ = true;
       }
     });
     return occ;
   }
-
-  
 
   renderCells() {
     const { currentMonth, selectedDate } = this.state;
@@ -78,17 +80,6 @@ class Calendar extends React.Component {
     let day = startDate;
     let formattedDate = "";
 
-    
-
-    // let btnClass = classNames({
-    //   'col': true,
-    //   'cell': true,
-    //   'disabled': !dateFns.isSameMonth(day, monthStart),
-    //   'occupied': this.isOccupied(day),
-      // 'occupied': dateFns.isSameDay(day, this.state.registrationDays)
-    // });
-    // console.log(btnClass);
-
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat);
@@ -100,22 +91,9 @@ class Calendar extends React.Component {
                 'col': true,
                 'cell': true,
                 'disabled': !dateFns.isSameMonth(day, monthStart),
-                // 'occupied': true
                 'occupied': this.isOccupied(day)
               })
-              // btnClass
-            // className={`col cell ${
-              // if (dateFns.isSameMonth(day, monthStart)) {
-              //   "disabled";
-              // }
-
-              
-
-
-              // !dateFns.isSameMonth(day, monthStart)
-              //   ? "disabled"
-              // : dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
-              }`}
+            }`}
             key={day}
             onClick={() => this.onDateClick(cloneDay)}
           >
@@ -123,8 +101,6 @@ class Calendar extends React.Component {
             <span className="bg">{formattedDate}</span>
           </div>
         );
-        // console.log(days);
-        console.log('rachel:', this.isOccupied(new Date(2025, 7, 5)));
         day = dateFns.addDays(day, 1);
       }
       rows.push(
@@ -156,7 +132,6 @@ class Calendar extends React.Component {
   }
 
   render() {
-
     
     return (
       <div className="calendar">

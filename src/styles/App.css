@@ -26,11 +26,12 @@
 /* VARIABLES */
 
 :root {
-  --main-color: #1a8fff;
+  --main-color: #2B7A78;
   --text-color: #777;
   --text-color-light: #ccc;
   --border-color: #eee;
   --bg-color: #f9f9f9;
+  --occupied: #3AAFA9;
   --neutral-color: #fff;
 }
 
@@ -178,7 +179,7 @@ main {
 
  /* change color of occupied room*/
 .calendar .body .occupied {
-  background: red;
+  background: var(--occupied);
 }
 
 .calendar .body .selected {
