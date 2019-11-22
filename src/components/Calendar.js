@@ -1,11 +1,12 @@
 import React from "react";
 import * as dateFns from "date-fns";
+import classNames from 'classnames';
 
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(2025, 7),
     selectedDate: new Date(2025, 7, 1),
-    registrationDays: new Date(2025, 7, 5),
+    registrationDays: { dates: [new Date(2025, 7, 5), new Date(2025, 7, 6)]},
   };
 
   renderHeader() { 
@@ -43,6 +44,27 @@ class Calendar extends React.Component {
     return <div className="days row">{days}</div>;
   }
 
+  isOccupied = (regDate) => {
+    let occ = false;
+    const dates = this.state.registrationDays.dates;
+    // console.log(typeof dates);
+    // console.log('dates:', dates);
+    // console.log('regDate:', regDate);
+    // console.log(dates.includes(regDate));
+    // return dates.includes(regDate);
+    dates.forEach(function (date) {
+      // console.log(date, regDate);
+      console.log(dateFns.isSameDay(date, regDate));
+      if (dateFns.isSameDay(date, regDate)) {
+        console.log('HERE!')
+        occ = true;
+      }
+    });
+    return occ;
+  }
+
+  
+
   renderCells() {
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
@@ -56,20 +78,44 @@ class Calendar extends React.Component {
     let day = startDate;
     let formattedDate = "";
 
+    
+
+    // let btnClass = classNames({
+    //   'col': true,
+    //   'cell': true,
+    //   'disabled': !dateFns.isSameMonth(day, monthStart),
+    //   'occupied': this.isOccupied(day),
+      // 'occupied': dateFns.isSameDay(day, this.state.registrationDays)
+    // });
+    // console.log(btnClass);
+
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = dateFns.format(day, dateFormat);
         const cloneDay = day;
         days.push(
           <div
-            className={`col cell ${
-              !dateFns.isSameMonth(day, monthStart)
-                ? "disabled"
-              : dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
-              }`}
+            className={`${
+              classNames({
+                'col': true,
+                'cell': true,
+                'disabled': !dateFns.isSameMonth(day, monthStart),
+                // 'occupied': true
+                'occupied': this.isOccupied(day)
+              })
+              // btnClass
             // className={`col cell ${
-            //   dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
-            //   }`}
+              // if (dateFns.isSameMonth(day, monthStart)) {
+              //   "disabled";
+              // }
+
+              
+
+
+              // !dateFns.isSameMonth(day, monthStart)
+              //   ? "disabled"
+              // : dateFns.isSameDay(day, this.state.registrationDays) ? "occupied" : ""
+              }`}
             key={day}
             onClick={() => this.onDateClick(cloneDay)}
           >
@@ -77,6 +123,8 @@ class Calendar extends React.Component {
             <span className="bg">{formattedDate}</span>
           </div>
         );
+        // console.log(days);
+        console.log('rachel:', this.isOccupied(new Date(2025, 7, 5)));
         day = dateFns.addDays(day, 1);
       }
       rows.push(
@@ -108,6 +156,8 @@ class Calendar extends React.Component {
   }
 
   render() {
+
+    
     return (
       <div className="calendar">
         {this.renderHeader()}
