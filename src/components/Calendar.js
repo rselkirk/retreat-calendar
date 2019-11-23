@@ -13,9 +13,11 @@ class Calendar extends React.Component {
     fetch('https://demo14.secure.retreat.guru/api/v1/registrations?token=ef061e1a717568ee5ca5c76a94cf5842')
       .then(response => response.json())
       .then(data => {
-        let dates = [1];
+        let dates = [];
         let occupiedDates = data.map((reg) => {
-          dates = dates.concat(dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) }));
+          if (reg.status === 'reserved' && reg.room_id === 6) {
+            dates = dates.concat(dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) }));
+          }
         })
         this.setState({registrationDays: {dates: dates}});
       })
