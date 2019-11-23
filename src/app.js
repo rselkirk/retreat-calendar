@@ -1,13 +1,13 @@
-import React from "react";
-import Calendar from "./components/Calendar";
-import "./styles/App.css";
+import React from 'react';
+import Calendar from './components/Calendar';
+import './styles/App.css';
 
 class App extends React.Component {
   render() {
     return (
-      <div className="App">
+      <div className='App'>
         <header>
-          <div id="logo">
+          <div id='logo'>
             <span>
               retreat<b>calendar</b>
             </span>

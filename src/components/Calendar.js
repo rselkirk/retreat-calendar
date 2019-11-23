@@ -1,5 +1,5 @@
-import React from "react";
-import * as dateFns from "date-fns";
+import React from 'react';
+import * as dateFns from 'date-fns';
 import classNames from 'classnames';
 
 class Calendar extends React.Component {
@@ -24,38 +24,38 @@ class Calendar extends React.Component {
   }
 
   renderHeader() { 
-    const dateFormat = "MMMM yyyy";
+    const dateFormat = 'MMMM yyyy';
     return (
-      <div className="header row flex-middle">
-        <div className="col col-start">
-          <div className="icon" onClick={this.prevMonth}>
+      <div className='header row flex-middle'>
+        <div className='col col-start'>
+          <div className='icon' onClick={this.prevMonth}>
             chevron_left
         </div>
         </div>
-        <div className="col col-center">
+        <div className='col col-center'>
           <span>
             {dateFns.format(this.state.currentMonth, dateFormat)}
           </span>
         </div>
-        <div className="col col-end" onClick={this.nextMonth}>
-          <div className="icon">chevron_right</div>
+        <div className='col col-end' onClick={this.nextMonth}>
+          <div className='icon'>chevron_right</div>
         </div>
       </div>
     );
   }
 
   renderDays() { 
-    const dateFormat = "iiii";
+    const dateFormat = 'iiii';
     const days = [];
     let startDate = dateFns.startOfWeek(this.state.currentMonth);
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div className="col col-center" key={i}>
+        <div className='col col-center' key={i}>
           {dateFns.format(dateFns.addDays(startDate, i), dateFormat)}
         </div>
       );
     }
-    return <div className="days row">{days}</div>;
+    return <div className='days row'>{days}</div>;
   }
 
   isOccupied = (regDate) => {
@@ -75,12 +75,12 @@ class Calendar extends React.Component {
     const monthEnd = dateFns.endOfMonth(monthStart);
     const startDate = dateFns.startOfWeek(monthStart);
     const endDate = dateFns.endOfWeek(monthEnd);
-    const dateFormat = "d";
+    const dateFormat = 'd';
     const rows = [];
 
     let days = [];
     let day = startDate;
-    let formattedDate = "";
+    let formattedDate = '';
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
@@ -93,26 +93,26 @@ class Calendar extends React.Component {
                 'col': true,
                 'cell': true,
                 'disabled': !dateFns.isSameMonth(day, monthStart),
-                'occupied': this.isOccupied(day)
+                'occupied': dateFns.isSameMonth(day, monthStart) ? this.isOccupied(day) : ''
               })
             }`}
             key={day}
             onClick={() => this.onDateClick(cloneDay)}
           >
-            <span className="number">{formattedDate}</span>
-            <span className="bg">{formattedDate}</span>
+            <span className='number'>{formattedDate}</span>
+            <span className='bg'>{formattedDate}</span>
           </div>
         );
         day = dateFns.addDays(day, 1);
       }
       rows.push(
-        <div className="row" key={day}>
+        <div className='row' key={day}>
           {days}
         </div>
       );
       days = [];
     }
-    return <div className="body">{rows}</div>;
+    return <div className='body'>{rows}</div>;
   }
 
   onDateClick = day => {
@@ -136,7 +136,7 @@ class Calendar extends React.Component {
   render() {
     
     return (
-      <div className="calendar">
+      <div className='calendar'>
         {this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
