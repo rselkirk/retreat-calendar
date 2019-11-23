@@ -7,19 +7,26 @@ class Calendar extends React.Component {
     currentMonth: new Date(2025, 7),
     selectedDate: new Date(2025, 7, 1),
     registrationDays: {dates: []},
+    guestNames: ''
   };
 
   componentDidMount() {
     fetch('https://demo14.secure.retreat.guru/api/v1/registrations?token=ef061e1a717568ee5ca5c76a94cf5842')
       .then(response => response.json())
       .then(data => {
-        let dates = [];
+        let occupiedDates = [];
+        let datesWithNames = {};
         let occupiedDates = data.map((reg) => {
           if (reg.status === 'reserved' && reg.room_id === 6) {
-            dates = dates.concat(dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) }));
+            const shortList = dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) })
+            shortList.forEach(function(date){
+              datesWithNames[date] = reg.full_name; 
+            });
+            this.state.guestNames = datesWithNames;
+            occupiedDates = occupiedDates.concat(shortList);
           }
         })
-        this.setState({registrationDays: {dates: dates}});
+        this.setState({registrationDays: {dates: occupiedDates}});
       })
   }
 
@@ -93,7 +100,8 @@ class Calendar extends React.Component {
                 'col': true,
                 'cell': true,
                 'disabled': !dateFns.isSameMonth(day, monthStart),
-                'occupied': dateFns.isSameMonth(day, monthStart) ? this.isOccupied(day) : ''
+                'occupied': dateFns.isSameMonth(day, monthStart) ? this.isOccupied(day) : '',
+                'hiddeninfo-on-hover': true
               })
             }`}
             key={day}
@@ -101,6 +109,7 @@ class Calendar extends React.Component {
           >
             <span className='number'>{formattedDate}</span>
             <span className='bg'>{formattedDate}</span>
+            <p class="hiddeninfo">{this.state.guestNames[day]}</p>
           </div>
         );
         day = dateFns.addDays(day, 1);

@@ -227,13 +227,21 @@ main {
   letter-spacing: -.07em;
 }
 
-.calendar .body .cell:hover .bg, .calendar .body .selected .bg  {
+/* .calendar .body .cell:hover .bg, .calendar .body .selected .bg  {
   opacity: 0.05;
   transition: .5s ease-in;
-}
+} */
 
 .calendar .body .col {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+}
+
+.hiddeninfo {
+  visibility: hidden;
+}
+
+.hiddeninfo-on-hover:hover .hiddeninfo {    
+  visibility: visible;  
 }
