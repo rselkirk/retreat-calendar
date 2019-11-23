@@ -16,10 +16,10 @@ class Calendar extends React.Component {
       .then(data => {
         let occupiedDates = [];
         let datesWithNames = {};
-        let occupiedDates = data.map((reg) => {
+        data.map((reg) => {
           if (reg.status === 'reserved' && reg.room_id === 6) {
             const shortList = dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) })
-            shortList.forEach(function(date){
+            shortList.forEach(function(date) {
               datesWithNames[date] = reg.full_name; 
             });
             this.state.guestNames = datesWithNames;
@@ -109,7 +109,7 @@ class Calendar extends React.Component {
           >
             <span className='number'>{formattedDate}</span>
             <span className='bg'>{formattedDate}</span>
-            <p class="hiddeninfo">{this.state.guestNames[day]}</p>
+            <p className="hiddeninfo">{this.state.guestNames[day]}</p>
           </div>
         );
         day = dateFns.addDays(day, 1);
@@ -142,6 +142,16 @@ class Calendar extends React.Component {
     });
   }
 
+  availableDays = () => {
+    let total = dateFns.getDaysInMonth(this.state.currentMonth)
+    this.state.registrationDays.dates.forEach((date) => {
+      if (dateFns.isSameMonth(date, this.state.currentMonth)) {
+        total -= 1;
+      }
+    });
+    return total;
+  }
+
   render() {
     
     return (
@@ -149,6 +159,7 @@ class Calendar extends React.Component {
         {this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
+        <p>Available Days:{this.availableDays()} </p>
       </div>
     );
   }
