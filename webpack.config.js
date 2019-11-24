@@ -9,7 +9,12 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'public')
+    contentBase: path.resolve(__dirname, 'public'),
+    port: 8080,
+    open: true,
+    proxy: {
+      "/api": "http://localhost:3000"
+    }
   },
   module: {
     rules: [
