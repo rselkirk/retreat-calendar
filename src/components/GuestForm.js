@@ -4,7 +4,6 @@ class GuestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -38,23 +37,22 @@ class GuestForm extends React.Component {
         <label>
           Activity Preferences:
           <label>
+            <input type="checkbox" />
             Yoga
-            <input type="checkbox" />
           </label>
           <label>
+            <input type="checkbox" />
             Juice Detox
-            <input type="checkbox" />
           </label>
           <label>
+            <input type="checkbox" />
             Breath-work
-            <input type="checkbox" />
           </label>
           <label>
-            Massage
             <input type="checkbox" />
+            Massage
           </label>
         </label>
-        
         <input type="submit" value="Submit" />
       </form>
     );

@@ -1,13 +1,60 @@
 import React from 'react';
 import * as dateFns from 'date-fns';
 import classNames from 'classnames';
+// import Product from './Product';
+import Modal from './Modal';
 
 class Calendar extends React.Component {
   state = {
     currentMonth: new Date(2025, 7),
     selectedDate: new Date(2025, 7, 1),
     registrationDays: {dates: []},
-    guestNames: ''
+    guestNames: '',
+    showModal: false
+  };
+
+  availableDays = () => {
+    let total = dateFns.getDaysInMonth(this.state.currentMonth)
+    this.state.registrationDays.dates.forEach((date) => {
+      if (dateFns.isSameMonth(date, this.state.currentMonth)) {
+        total -= 1;
+      }
+    });
+    return total;
+  }
+
+  isOccupied = (regDate) => {
+    let occ = false;
+    const dates = this.state.registrationDays.dates;
+    dates.forEach(function (date) {
+      if (dateFns.isSameDay(date, regDate)) {
+        occ = true;
+      }
+    });
+    return occ;
+  }
+
+  hideModal = value => {
+    this.setState({ showModal: false });
+  };
+
+  nextMonth = () => {
+    this.setState({
+      currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
+    });
+  }
+
+  prevMonth = () => {
+    this.setState({
+      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+    });
+  }
+
+  onDateClick = day => {
+    this.setState({
+      selectedDate: day,
+      showModal: true
+    });
   };
 
   componentDidMount() {
@@ -65,17 +112,6 @@ class Calendar extends React.Component {
     return <div className='days row'>{days}</div>;
   }
 
-  isOccupied = (regDate) => {
-    let occ = false;
-    const dates = this.state.registrationDays.dates;
-    dates.forEach(function (date) {
-      if (dateFns.isSameDay(date, regDate)) {
-        occ = true;
-      }
-    });
-    return occ;
-  }
-
   renderCells() {
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
@@ -105,7 +141,7 @@ class Calendar extends React.Component {
               })
             }`}
             key={day}
-            onClick={() => this.onDateClick(cloneDay)}
+            onClick={() => this.onDateClick(day)}
           >
             <span className='number'>{formattedDate}</span>
             <span className='bg'>{formattedDate}</span>
@@ -124,39 +160,14 @@ class Calendar extends React.Component {
     return <div className='body'>{rows}</div>;
   }
 
-  onDateClick = day => {
-    this.setState({
-      selectedDate: day
-    });
-  };
-
-  nextMonth = () => { 
-    this.setState({
-      currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
-    });
-  }
-
-  prevMonth = () => { 
-    this.setState({
-      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
-    });
-  }
-
-  availableDays = () => {
-    let total = dateFns.getDaysInMonth(this.state.currentMonth)
-    this.state.registrationDays.dates.forEach((date) => {
-      if (dateFns.isSameMonth(date, this.state.currentMonth)) {
-        total -= 1;
-      }
-    });
-    return total;
-  }
-
   render() {
-    
     return (
       <div className='calendar'>
         {this.renderHeader()}
+        <Modal
+          show={this.state.showModal}
+          onHide={() => this.hideModal()}
+        />
         {this.renderDays()}
         {this.renderCells()}
         <p>Available Days:{this.availableDays()} </p>
