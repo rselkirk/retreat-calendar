@@ -12,7 +12,7 @@ class App extends React.Component {
       .catch(err => console.log(err));
   }
   callBackendAPI = async () => {
-    const response = await fetch('/api/users');
+    const response = await fetch('/api/guests');
     const body = await response.json();
 
     if (response.status !== 200) {

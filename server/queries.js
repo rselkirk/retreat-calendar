@@ -8,7 +8,7 @@ const pool = new Pool({
   port: 5432,
 })
 
-const getUsers = (request, response) => {
+const getGuests = (request, response) => {
   pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
     if (error) {
       throw error
@@ -17,10 +17,18 @@ const getUsers = (request, response) => {
   });
 }
 
+const createGuestInfo = (request, response) => {
+  const { api_id, name, flight_info, meal_pref, yoga, detox, massage, breath } = request.body
+
+  pool.query('INSERT INTO users (api_id, name, flight_info, meal_pref, yoga, detox, massage, breath) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id', [api_id, name, flight_info, meal_pref, yoga, detox, massage, breath], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(201).send(`Guess info added to id ${results.rows[0].id}!`)
+  })
+}
+
 module.exports = {
-  getUsers,
-  // getUserById,
-  // createUser,
-  // updateUser,
-  // deleteUser,
+  getGuests,
+  createGuestInfo,
 }
