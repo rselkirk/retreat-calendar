@@ -51,7 +51,6 @@ class GuestForm extends React.Component {
 
     axios.post('http://localhost:3000/api/guests', { data })
       .then(res => {
-        // console.log(res);
         console.log(res.data);
       })
   }
