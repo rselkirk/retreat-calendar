@@ -6,8 +6,8 @@ class GuestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      apiId: '',
-      name: '',
+      apiId: props.apiId,
+      name: props.guestName,
       flightInfo: '',
       mealPref: 'omnivore',
       yoga: false,
@@ -23,21 +23,18 @@ class GuestForm extends React.Component {
 
   onChange(event) {
     this.setState({ [event.target.name]: event.target.value })
-    console.log(this.state);
   }
 
   onCheckboxChange({target}) {
     this.setState({ [target.name]: !this.state[target.name] });
-    console.log(this.state);
   }
 
   onSubmit(event) {
     event.preventDefault();
-    console.log(event.target);
     const { apiId, name, flightInfo, mealPref, yoga, detox, massage, breath } = this.state;
     const data = {
-      api_id: 1,
-      name: name,
+      api_id: this.state.apiId,
+      name: this.state.name,
       flight_info: flightInfo,
       meal_pref: mealPref,
       yoga: yoga,
@@ -45,8 +42,6 @@ class GuestForm extends React.Component {
       massage: massage,
       breath: breath
     };
-    // const { apiId, name, flightInfo, mealPref, yoga, detox, massage, breath } = this.state;
-    // const data = new FormData(event.target);
 
     axios.post('http://localhost:3000/api/guests', { data })
       .then(res => {
