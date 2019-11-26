@@ -1,7 +1,6 @@
 import React from 'react';
 import * as dateFns from 'date-fns';
 import classNames from 'classnames';
-// import Product from './Product';
 import Modal from './Modal';
 
 class Calendar extends React.Component {

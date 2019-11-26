@@ -5,7 +5,6 @@ import "../styles/Modal.css";
 
 class Modal extends Component {
   render() {
-    console.log(this.props.show);
     return (
       <React.Fragment>
         {this.props.show && (
