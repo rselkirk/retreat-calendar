@@ -9,7 +9,8 @@ class Calendar extends React.Component {
     selectedDate: new Date(2025, 7, 1),
     registrationDays: {dates: []},
     guestNames: '',
-    showModal: false
+    showModal: false,
+    green: 9
   };
 
   availableDays = () => {
@@ -66,7 +67,9 @@ class Calendar extends React.Component {
           if (reg.status === 'reserved' && reg.room_id === 6) {
             const shortList = dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) })
             shortList.forEach(function(date) {
-              datesWithNames[date] = reg.full_name; 
+              datesWithNames[date] = { 
+                apiId: reg.id, 
+                fullName: reg.full_name }; 
             });
             this.state.guestNames = datesWithNames;
             occupiedDates = occupiedDates.concat(shortList);
@@ -140,11 +143,11 @@ class Calendar extends React.Component {
               })
             }`}
             key={day}
-            onClick={() => this.onDateClick(day)}
+            onClick={() => this.onDateClick(cloneDay)}
           >
             <span className='number'>{formattedDate}</span>
             <span className='bg'>{formattedDate}</span>
-            <p className="hiddeninfo">{this.state.guestNames[day]}</p>
+            <p className="hiddeninfo">{typeof this.state.guestNames[day] === "undefined" ? '' : this.state.guestNames[day].fullName}</p>
           </div>
         );
         day = dateFns.addDays(day, 1);
@@ -166,6 +169,8 @@ class Calendar extends React.Component {
         <Modal
           show={this.state.showModal}
           onHide={() => this.hideModal()}
+          apiId={this.state.guestNames === '' ? this.state.guestNames : this.state.guestNames[this.state.selectedDate].apiId}
+          guestName={this.state.guestNames === '' ? this.state.guestNames : this.state.guestNames[this.state.selectedDate].fullName}
         />
         {this.renderDays()}
         {this.renderCells()}

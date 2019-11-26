@@ -1,11 +1,13 @@
 import React from 'react';
+import axios from 'axios';
+
 
 class GuestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      apiId: '',
-      name: '',
+      apiId: props.apiId,
+      name: props.guestName,
       flightInfo: '',
       mealPref: 'omnivore',
       yoga: false,
@@ -23,18 +25,39 @@ class GuestForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  onCheckboxChange({target}) {
-    this.setState({ [target.name]: !this.state[target.name] });
+  onCheckboxChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
   }
 
   onSubmit(event) {
-    alert('form: ' + this.state.value);
     event.preventDefault();
+    const { apiId, name, flightInfo, mealPref, yoga, detox, massage, breath } = this.state;
+    const data = {
+      api_id: apiId,
+      name: name,
+      flight_info: flightInfo,
+      meal_pref: mealPref,
+      yoga: yoga,
+      detox: detox,
+      massage: massage,
+      breath: breath
+    };
+
+    axios.post('http://localhost:3000/api/guests', { data })
+      .then(res => {
+        console.log(res.data);
+      })
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.onSubmit}>
         <label>
           Flight Info:
           <input
@@ -76,7 +99,7 @@ class GuestForm extends React.Component {
               name='detox'
               id='detox'
               checked={this.state.detox}
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
             />
             Juice Detox
           </label>
@@ -86,7 +109,7 @@ class GuestForm extends React.Component {
               name='breath'
               id='breath'
               checked={this.state.breath}
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
             />
             Breath-work
           </label>
@@ -95,7 +118,7 @@ class GuestForm extends React.Component {
               type='checkbox'
               name='massage'
               id='massage'
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
               value={this.state.massage}
             />
             Massage
