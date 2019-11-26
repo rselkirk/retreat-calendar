@@ -18,7 +18,8 @@ const getGuests = (request, response) => {
 }
 
 const createGuestInfo = (request, response) => {
-  const { api_id, name, flight_info, meal_pref, yoga, detox, massage, breath } = request.body
+  console.log(request.body.data);
+  const { api_id, name, flight_info, meal_pref, yoga, detox, massage, breath } = request.body.data
 
   pool.query('INSERT INTO users (api_id, name, flight_info, meal_pref, yoga, detox, massage, breath) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id', [api_id, name, flight_info, meal_pref, yoga, detox, massage, breath], (error, results) => {
     if (error) {
