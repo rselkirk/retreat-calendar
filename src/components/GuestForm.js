@@ -25,16 +25,22 @@ class GuestForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  onCheckboxChange({target}) {
-    this.setState({ [target.name]: !this.state[target.name] });
+  onCheckboxChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
   }
 
   onSubmit(event) {
     event.preventDefault();
     const { apiId, name, flightInfo, mealPref, yoga, detox, massage, breath } = this.state;
     const data = {
-      api_id: this.state.apiId,
-      name: this.state.name,
+      api_id: apiId,
+      name: name,
       flight_info: flightInfo,
       meal_pref: mealPref,
       yoga: yoga,
@@ -45,7 +51,7 @@ class GuestForm extends React.Component {
 
     axios.post('http://localhost:3000/api/guests', { data })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         console.log(res.data);
       })
   }
@@ -94,7 +100,7 @@ class GuestForm extends React.Component {
               name='detox'
               id='detox'
               checked={this.state.detox}
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
             />
             Juice Detox
           </label>
@@ -104,7 +110,7 @@ class GuestForm extends React.Component {
               name='breath'
               id='breath'
               checked={this.state.breath}
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
             />
             Breath-work
           </label>
@@ -113,7 +119,7 @@ class GuestForm extends React.Component {
               type='checkbox'
               name='massage'
               id='massage'
-              onChange={this.onChange}
+              onChange={this.onCheckboxChange}
               value={this.state.massage}
             />
             Massage
