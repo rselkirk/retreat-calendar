@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-
 class GuestForm extends React.Component {
   constructor(props) {
     super(props);
@@ -13,7 +12,7 @@ class GuestForm extends React.Component {
       yoga: false,
       detox: false,
       massage: false,
-      breath: false
+      breath: false,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -22,7 +21,7 @@ class GuestForm extends React.Component {
   }
 
   onChange(event) {
-    this.setState({ [event.target.name]: event.target.value })
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   onCheckboxChange(event) {
@@ -37,7 +36,16 @@ class GuestForm extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    const { apiId, name, flightInfo, mealPref, yoga, detox, massage, breath } = this.state;
+    const { 
+      apiId, 
+      name, 
+      flightInfo, 
+      mealPref, 
+      yoga, 
+      detox, 
+      massage, 
+      breath 
+    } = this.state;
     const data = {
       api_id: apiId,
       name: name,
@@ -73,8 +81,8 @@ class GuestForm extends React.Component {
           <select
             name='mealPref'
             id='mealPref'
-            value={this.state.value} 
-            onChange={this.onChange} 
+            value={this.state.value}
+            onChange={this.onChange}
           >
             <option value='omnivore'>Omnivore</option>
             <option value='vegetarian'>Vegetarian</option>
@@ -89,7 +97,7 @@ class GuestForm extends React.Component {
               name='yoga'
               id='yoga'
               checked={this.state.yoga}
-              onChange={this.onCheckboxChange} 
+              onChange={this.onCheckboxChange}
             />
             Yoga
           </label>

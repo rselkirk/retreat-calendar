@@ -7,14 +7,36 @@ class Calendar extends React.Component {
   state = {
     currentMonth: new Date(2025, 7),
     selectedDate: new Date(2025, 7, 1),
-    registrationDays: {dates: []},
+    registrationDays: { dates: [] },
     guestNames: '',
     showModal: false,
-    green: 9
   };
 
+  componentDidMount() {
+    fetch('https://demo14.secure.retreat.guru/api/v1/registrations?token=ef061e1a717568ee5ca5c76a94cf5842')
+      .then(response => response.json())
+      .then(data => {
+        let occupiedDates = [];
+        const datesWithNames = {};
+        data.map((reg) => {
+          if (reg.status === 'reserved' && reg.room_id === 6) {
+            const shortList = dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) });
+            shortList.forEach(function (date) {
+              datesWithNames[date] = {
+                apiId: reg.id,
+                fullName: reg.full_name,
+              };
+            });
+            this.state.guestNames = datesWithNames;
+            occupiedDates = occupiedDates.concat(shortList);
+          }
+        });
+        this.setState({ registrationDays: { dates: occupiedDates } });
+      });
+  }
+
   availableDays = () => {
-    let total = dateFns.getDaysInMonth(this.state.currentMonth)
+    let total = dateFns.getDaysInMonth(this.state.currentMonth);
     this.state.registrationDays.dates.forEach((date) => {
       if (dateFns.isSameMonth(date, this.state.currentMonth)) {
         total -= 1;
@@ -34,7 +56,7 @@ class Calendar extends React.Component {
     return occ;
   }
 
-  hideModal = value => {
+  hideModal = () => {
     this.setState({ showModal: false });
   };
 
@@ -46,7 +68,7 @@ class Calendar extends React.Component {
 
   prevMonth = () => {
     this.setState({
-      currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+      currentMonth: dateFns.subMonths(this.state.currentMonth, 1),
     });
   }
 
@@ -57,28 +79,6 @@ class Calendar extends React.Component {
     });
   };
 
-  componentDidMount() {
-    fetch('https://demo14.secure.retreat.guru/api/v1/registrations?token=ef061e1a717568ee5ca5c76a94cf5842')
-      .then(response => response.json())
-      .then(data => {
-        let occupiedDates = [];
-        let datesWithNames = {};
-        data.map((reg) => {
-          if (reg.status === 'reserved' && reg.room_id === 6) {
-            const shortList = dateFns.eachDayOfInterval({ start: dateFns.parse(reg.start_date, 'yyyy-MM-dd', new Date()), end: dateFns.parse(reg.end_date, 'yyyy-MM-dd', new Date()) })
-            shortList.forEach(function(date) {
-              datesWithNames[date] = { 
-                apiId: reg.id, 
-                fullName: reg.full_name }; 
-            });
-            this.state.guestNames = datesWithNames;
-            occupiedDates = occupiedDates.concat(shortList);
-          }
-        })
-        this.setState({registrationDays: {dates: occupiedDates}});
-      })
-  }
-
   renderHeader() { 
     const dateFormat = 'MMMM yyyy';
     return (
@@ -86,7 +86,7 @@ class Calendar extends React.Component {
         <div className='col col-start'>
           <div className='icon' onClick={this.prevMonth}>
             chevron_left
-        </div>
+          </div>
         </div>
         <div className='col col-center'>
           <span>
@@ -103,7 +103,7 @@ class Calendar extends React.Component {
   renderDays() { 
     const dateFormat = 'iiii';
     const days = [];
-    let startDate = dateFns.startOfWeek(this.state.currentMonth);
+    const startDate = dateFns.startOfWeek(this.state.currentMonth);
     for (let i = 0; i < 7; i++) {
       days.push(
         <div className='col col-center' key={i}>
@@ -147,7 +147,7 @@ class Calendar extends React.Component {
           >
             <span className='number'>{formattedDate}</span>
             <span className='bg'>{formattedDate}</span>
-            <p className="hiddeninfo">{typeof this.state.guestNames[day] === "undefined" ? '' : this.state.guestNames[day].fullName}</p>
+            <p className='hiddeninfo'>{typeof this.state.guestNames[day] === 'undefined' ? '' : this.state.guestNames[day].fullName}</p>
           </div>
         );
         day = dateFns.addDays(day, 1);
